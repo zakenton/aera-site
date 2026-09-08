@@ -15,8 +15,8 @@
     --text-dim: rgba(26, 23, 18, 0.62);
     --card: rgba(253, 250, 243, 0.72);
     --card-border: rgba(26, 23, 18, 0.10);
-    --glow: rgba(0, 0, 0, 0.40);
-    --glow-soft: rgba(0, 0, 0, 0.18);
+    --glow: rgba(0, 0, 0, 0.20);
+    --glow-soft: rgba(0, 0, 0, 0.09);
     --eq-bar: rgba(0, 0, 0, 0.55);
     --shadow: rgba(26, 23, 18, 0.14);
     color-scheme: light dark;
@@ -28,8 +28,8 @@
       --text-dim: rgba(255, 255, 255, 0.62);
       --card: rgba(28, 28, 30, 0.68);
       --card-border: rgba(255, 255, 255, 0.12);
-      --glow: rgba(255, 255, 255, 0.45);
-      --glow-soft: rgba(255, 255, 255, 0.20);
+      --glow: rgba(255, 255, 255, 0.22);
+      --glow-soft: rgba(255, 255, 255, 0.10);
       --eq-bar: rgba(255, 255, 255, 0.55);
       --shadow: rgba(0, 0, 0, 0.45);
     }
@@ -40,8 +40,8 @@
     --text-dim: rgba(255, 255, 255, 0.62);
     --card: rgba(28, 28, 30, 0.68);
     --card-border: rgba(255, 255, 255, 0.12);
-    --glow: rgba(255, 255, 255, 0.45);
-    --glow-soft: rgba(255, 255, 255, 0.20);
+    --glow: rgba(255, 255, 255, 0.22);
+    --glow-soft: rgba(255, 255, 255, 0.10);
     --eq-bar: rgba(255, 255, 255, 0.55);
     --shadow: rgba(0, 0, 0, 0.45);
   }
@@ -123,21 +123,21 @@
     justify-content: center;
     text-align: center;
     padding: 0 24px;
-    transform: translateY(-7svh);
+    transform: translateY(-14svh);
   }
 
   .logo {
     margin: 0;
     font-family: ui-rounded, "SF Pro Rounded", "Fredoka", system-ui, sans-serif;
     font-weight: 700;
-    font-size: clamp(3.4rem, 11vw, 12rem);
+    font-size: clamp(4.2rem, 13vw, 14rem);
     letter-spacing: -0.01em;
     line-height: 1;
     color: var(--text);
     text-shadow:
-      0 0 18px var(--glow),
-      0 0 46px var(--glow-soft),
-      0 0 90px var(--glow-soft);
+      0 0 14px var(--glow),
+      0 0 38px var(--glow-soft),
+      0 0 74px var(--glow-soft);
   }
 
   .subtitle {
