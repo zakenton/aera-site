@@ -5,7 +5,7 @@ Published via GitHub Pages from the root of this repo's `main` branch.
 
 ## Files
 
-- `index.html` — landing, links to both
+- `index.html` — landing: hero + scroll/swipe-driven feature slides, links to both
 - `privacy.html` — Privacy Policy URL
 - `support.html` — Support URL
 - `.nojekyll` — serve files as-is on GitHub Pages (no Jekyll build)

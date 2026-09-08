@@ -52,11 +52,12 @@
 
   body {
     margin: 0;
-    min-height: 100svh;
+    height: 100svh;
     background: var(--bg);
     color: var(--text);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    overflow-x: hidden;
+    overflow: hidden;
+    overscroll-behavior: none;
     transition: background-color .3s ease, color .3s ease;
   }
 
@@ -111,20 +112,49 @@
     :root:not([data-theme="light"]) #theme-toggle .icon-moon { display: block; }
   }
 
-  /* ---------- Hero ---------- */
+  /* ---------- Slide deck ---------- */
 
-  .hero {
-    position: relative;
+  .deck {
+    position: fixed;
+    inset: 0;
     z-index: 1;
-    min-height: 100svh;
+    overflow: hidden;
+  }
+
+  .slide {
+    --lift: -7svh;
+    position: absolute;
+    inset: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     text-align: center;
-    padding: 0 24px;
-    transform: translateY(-14svh);
+    padding: max(88px, env(safe-area-inset-top)) 24px max(88px, env(safe-area-inset-bottom));
+    opacity: 0;
+    transform: translateY(64px) scale(0.96);
+    filter: blur(8px);
+    pointer-events: none;
+    transition:
+      transform .8s cubic-bezier(.22, .61, .36, 1),
+      opacity .6s ease,
+      filter .6s ease;
   }
+
+  .slide.is-active {
+    opacity: 1;
+    transform: translateY(var(--lift)) scale(1);
+    filter: blur(0);
+    pointer-events: auto;
+  }
+
+  .slide.is-above {
+    opacity: 0;
+    transform: translateY(calc(var(--lift) - 90px)) scale(1.05);
+    filter: blur(12px);
+  }
+
+  .slide--hero { --lift: -13svh; }
 
   .logo {
     margin: 0;
@@ -145,6 +175,140 @@
     font-size: clamp(1rem, 1.6vw, 1.5rem);
     color: var(--text-dim);
     max-width: 44ch;
+  }
+
+  .slide-content {
+    width: 100%;
+    max-width: 40ch;
+    text-align: left;
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 28px;
+    padding: clamp(24px, 5vw, 38px) clamp(22px, 5vw, 34px);
+    backdrop-filter: blur(16px) saturate(1.4);
+    -webkit-backdrop-filter: blur(16px) saturate(1.4);
+    box-shadow: 0 8px 30px var(--shadow);
+  }
+
+  .slide-content h2 {
+    margin: 0 0 14px;
+    font-family: ui-rounded, "SF Pro Rounded", "Fredoka", system-ui, sans-serif;
+    font-weight: 700;
+    font-size: clamp(1.55rem, 5vw, 2.35rem);
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+  }
+
+  .slide-lead {
+    margin: 0 0 12px;
+    font-size: clamp(1rem, 1.4vw, 1.12rem);
+    color: var(--text);
+  }
+
+  .slide-content ul {
+    margin: 0;
+    padding-left: 1.15rem;
+  }
+
+  .slide-content li {
+    margin: .55rem 0;
+    font-size: clamp(.95rem, 1.3vw, 1.05rem);
+    line-height: 1.5;
+    color: var(--text-dim);
+  }
+
+  .slide-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 22px;
+    padding: 11px 20px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #0A84FF, #6E5CE6);
+    color: #fff;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: .95rem;
+    box-shadow: 0 8px 24px var(--shadow);
+    transition: transform .18s ease;
+  }
+  .slide-cta:hover { transform: translateY(-2px); }
+  .slide-cta:active { transform: scale(0.97); }
+  .slide-cta svg { width: 16px; height: 16px; }
+
+  /* ---------- Scroll hint ---------- */
+
+  .scroll-hint {
+    position: absolute;
+    left: 50%;
+    bottom: max(96px, calc(env(safe-area-inset-bottom) + 84px));
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    color: var(--text-dim);
+    font-size: .8rem;
+    opacity: 1;
+    transition: opacity .5s ease;
+  }
+  .scroll-hint svg {
+    width: 20px;
+    height: 20px;
+    animation: hint-bounce 1.8s ease-in-out infinite;
+  }
+  .hint-dismissed .scroll-hint {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  @keyframes hint-bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(6px); }
+  }
+
+  /* ---------- Deck progress nav ---------- */
+
+  .deck-nav {
+    position: fixed;
+    right: max(12px, env(safe-area-inset-right));
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .deck-nav button {
+    width: 9px;
+    height: 9px;
+    padding: 0;
+    border-radius: 999px;
+    border: 1px solid var(--card-border);
+    background: var(--card);
+    cursor: pointer;
+    appearance: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: background-color .25s ease, height .25s ease, transform .25s ease;
+  }
+  .deck-nav button[aria-current="true"] {
+    background: var(--text);
+    height: 22px;
+  }
+
+  @media (max-height: 430px) {
+    .deck-nav { display: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .slide {
+      transition: opacity .3s ease;
+      transform: none !important;
+      filter: none !important;
+    }
+    .scroll-hint svg { animation: none; }
   }
 
   /* ---------- TestFlight banner ---------- */
@@ -168,11 +332,17 @@
     text-decoration: none;
     color: var(--text);
     max-width: calc(100vw - 32px);
-    transition: transform .2s ease, background-color .3s ease, border-color .3s ease;
+    transition: transform .25s ease, opacity .25s ease, background-color .3s ease, border-color .3s ease;
   }
 
   .testflight:hover { transform: translateX(-50%) translateY(-2px); }
   .testflight:active { transform: translateX(-50%) scale(0.98); }
+
+  body:not([data-slide="0"]) .testflight {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(-50%) translateY(14px);
+  }
 
   .tf-icon {
     flex: none;
@@ -302,10 +472,57 @@
     </div>
   </header>
 
-  <main class="hero">
-    <h1 class="logo">Aera</h1>
-    <p class="subtitle" data-i18n="subtitle">A personal, on-device music player.</p>
+  <main class="deck">
+    <section class="slide slide--hero is-active" id="slide-1" aria-label="Aera">
+      <h1 class="logo">Aera</h1>
+      <p class="subtitle" data-i18n="subtitle">A personal, on-device music player.</p>
+      <div class="scroll-hint" aria-hidden="true">
+        <span data-i18n="scroll_hint">Scroll to explore</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 10l5 5 5-5"/></svg>
+      </div>
+    </section>
+
+    <section class="slide" id="slide-2" aria-hidden="true">
+      <div class="slide-content">
+        <h2 data-i18n="s2_title">Nothing in the way</h2>
+        <p class="slide-lead" data-i18n="s2_lead">No tab bars, no buried settings, no clutter — just your music.</p>
+        <ul>
+          <li data-i18n="s2_p1">Manage your whole library from one place — add tracks, build playlists, reorder and organize without digging through menus.</li>
+          <li data-i18n="s2_p2">Every gesture does the obvious thing. There is nothing to learn.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="slide" id="slide-3" aria-hidden="true">
+      <div class="slide-content">
+        <h2 data-i18n="s3_title">Find anything in seconds</h2>
+        <ul>
+          <li data-i18n="s3_p1">Search across tracks, albums, playlists and artists at once.</li>
+          <li data-i18n="s3_p2">Filter by how often you actually listen.</li>
+          <li data-i18n="s3_p3">Import and export tracks freely, with automatic duplicate checks.</li>
+          <li data-i18n="s3_p4">A clean tag editor for title, artist, album and artwork.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="slide" id="slide-4" aria-hidden="true">
+      <div class="slide-content">
+        <h2 data-i18n="s4_title">Only getting better</h2>
+        <p class="slide-lead" data-i18n="s4_body">Aera is actively developed. New features and refinements land regularly — and your feedback shapes what comes next.</p>
+        <a class="slide-cta" id="cta-link" href="#" data-i18n-aria="tf_aria" aria-label="Join the TestFlight beta">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M3 11.5 21 4l-6.5 18-3-8-8.5-2.5Z" fill="#fff"/><path d="M11.5 13.5 21 4" stroke="#fff" stroke-width="1.3" stroke-linecap="round"/></svg>
+          <span data-i18n="s4_cta">Try the beta</span>
+        </a>
+      </div>
+    </section>
   </main>
+
+  <nav class="deck-nav" aria-label="Slides">
+    <button type="button" data-slide-to="0" aria-current="true" data-i18n-aria="nav_slide" aria-label="Go to slide"></button>
+    <button type="button" data-slide-to="1" aria-current="false" data-i18n-aria="nav_slide" aria-label="Go to slide"></button>
+    <button type="button" data-slide-to="2" aria-current="false" data-i18n-aria="nav_slide" aria-label="Go to slide"></button>
+    <button type="button" data-slide-to="3" aria-current="false" data-i18n-aria="nav_slide" aria-label="Go to slide"></button>
+  </nav>
 
   <a class="testflight" id="testflight-link" href="#" data-i18n-aria="tf_aria" aria-label="Join the TestFlight beta">
     <span class="tf-icon">
@@ -331,7 +548,21 @@
       nav_theme: "Toggle theme",
       tf_title: "Try the beta",
       tf_body: "Early access via TestFlight",
-      tf_aria: "Join the TestFlight beta"
+      tf_aria: "Join the TestFlight beta",
+      scroll_hint: "Scroll to explore",
+      nav_slide: "Go to slide",
+      s2_title: "Nothing in the way",
+      s2_lead: "No tab bars, no buried settings, no clutter — just your music.",
+      s2_p1: "Manage your whole library from one place — add tracks, build playlists, reorder and organize without digging through menus.",
+      s2_p2: "Every gesture does the obvious thing. There is nothing to learn.",
+      s3_title: "Find anything in seconds",
+      s3_p1: "Search across tracks, albums, playlists and artists at once.",
+      s3_p2: "Filter by how often you actually listen.",
+      s3_p3: "Import and export tracks freely, with automatic duplicate checks.",
+      s3_p4: "A clean tag editor for title, artist, album and artwork.",
+      s4_title: "Only getting better",
+      s4_body: "Aera is actively developed. New features and refinements land regularly — and your feedback shapes what comes next.",
+      s4_cta: "Try the beta"
     },
     ru: {
       subtitle: "Личный музыкальный плеер, который хранит всё на устройстве.",
@@ -341,7 +572,21 @@
       nav_theme: "Сменить тему",
       tf_title: "Попробуйте бету",
       tf_body: "Ранний доступ через TestFlight",
-      tf_aria: "Присоединиться к бете в TestFlight"
+      tf_aria: "Присоединиться к бете в TestFlight",
+      scroll_hint: "Прокрутите, чтобы узнать больше",
+      nav_slide: "Перейти к слайду",
+      s2_title: "Ничего лишнего",
+      s2_lead: "Никаких вкладок, спрятанных настроек и мусора — только ваша музыка.",
+      s2_p1: "Вся библиотека под рукой: добавляйте треки, собирайте плейлисты, меняйте порядок и наводите порядок без блужданий по меню.",
+      s2_p2: "Каждый жест делает очевидное. Учиться нечему.",
+      s3_title: "Найдётся за секунды",
+      s3_p1: "Поиск сразу по трекам, альбомам, плейлистам и исполнителям.",
+      s3_p2: "Фильтр по частоте прослушивания.",
+      s3_p3: "Свободный импорт и экспорт треков с проверкой на дубликаты.",
+      s3_p4: "Удобный редактор тегов: название, исполнитель, альбом и обложка.",
+      s4_title: "Дальше — только лучше",
+      s4_body: "Aera активно развивается. Новые возможности и улучшения выходят регулярно, а ваши отзывы определяют, что будет дальше.",
+      s4_cta: "Попробовать бету"
     },
     be: {
       subtitle: "Асабісты музычны плэер, які захоўвае ўсё на прыладзе.",
@@ -351,7 +596,21 @@
       nav_theme: "Змяніць тэму",
       tf_title: "Паспрабуйце бэту",
       tf_body: "Ранні доступ праз TestFlight",
-      tf_aria: "Далучыцца да бэты ў TestFlight"
+      tf_aria: "Далучыцца да бэты ў TestFlight",
+      scroll_hint: "Пракруціце, каб даведацца больш",
+      nav_slide: "Перайсці да слайда",
+      s2_title: "Нічога лішняга",
+      s2_lead: "Ніякіх укладак, схаваных налад і смецця — толькі ваша музыка.",
+      s2_p1: "Уся бібліятэка пад рукой: дадавайце трэкі, збірайце плэйлісты, мяняйце парадак і наводзьце лад без блуканняў па меню.",
+      s2_p2: "Кожны жэст робіць відавочнае. Вучыцца няма чаму.",
+      s3_title: "Знойдзецца за секунды",
+      s3_p1: "Пошук адразу па трэках, альбомах, плэйлістах і выканаўцах.",
+      s3_p2: "Фільтр па частаце праслухоўвання.",
+      s3_p3: "Свабодны імпарт і экспарт трэкаў з праверкай на дублікаты.",
+      s3_p4: "Зручны рэдактар тэгаў: назва, выканаўца, альбом і вокладка.",
+      s4_title: "Далей — толькі лепш",
+      s4_body: "Aera актыўна развіваецца. Новыя магчымасці і паляпшэнні выходзяць рэгулярна, а вашы водгукі вызначаюць, што будзе далей.",
+      s4_cta: "Паспрабаваць бэту"
     },
     uk: {
       subtitle: "Особистий музичний плеєр, який зберігає все на пристрої.",
@@ -361,7 +620,21 @@
       nav_theme: "Змінити тему",
       tf_title: "Спробуйте бету",
       tf_body: "Ранній доступ через TestFlight",
-      tf_aria: "Приєднатися до бети в TestFlight"
+      tf_aria: "Приєднатися до бети в TestFlight",
+      scroll_hint: "Гортайте, щоб дізнатися більше",
+      nav_slide: "Перейти до слайда",
+      s2_title: "Нічого зайвого",
+      s2_lead: "Жодних вкладок, прихованих налаштувань і мотлоху — лише ваша музика.",
+      s2_p1: "Уся бібліотека під рукою: додавайте треки, збирайте плейлисти, змінюйте порядок і впорядковуйте без блукань по меню.",
+      s2_p2: "Кожен жест робить очевидне. Вчитися немає чому.",
+      s3_title: "Знайдеться за секунди",
+      s3_p1: "Пошук одразу по треках, альбомах, плейлистах та виконавцях.",
+      s3_p2: "Фільтр за частотою прослуховування.",
+      s3_p3: "Вільний імпорт та експорт треків із перевіркою на дублікати.",
+      s3_p4: "Зручний редактор тегів: назва, виконавець, альбом та обкладинка.",
+      s4_title: "Далі — тільки краще",
+      s4_body: "Aera активно розвивається. Нові можливості та покращення виходять регулярно, а ваші відгуки визначають, що буде далі.",
+      s4_cta: "Спробувати бету"
     },
     bg: {
       subtitle: "Личен музикален плейър, който съхранява всичко на устройството.",
@@ -371,7 +644,21 @@
       nav_theme: "Смяна на темата",
       tf_title: "Изпробвайте бетата",
       tf_body: "Ранен достъп чрез TestFlight",
-      tf_aria: "Присъединете се към бетата в TestFlight"
+      tf_aria: "Присъединете се към бетата в TestFlight",
+      scroll_hint: "Превъртете, за да разгледате",
+      nav_slide: "Към слайд",
+      s2_title: "Нищо излишно",
+      s2_lead: "Без ленти с раздели, без скрити настройки, без бъркотия — само вашата музика.",
+      s2_p1: "Цялата библиотека на едно място: добавяйте песни, създавайте плейлисти, пренареждайте и организирайте без ровене в менюта.",
+      s2_p2: "Всеки жест прави очевидното. Няма нищо за учене.",
+      s3_title: "Намерете всичко за секунди",
+      s3_p1: "Търсене едновременно в песни, албуми, плейлисти и изпълнители.",
+      s3_p2: "Филтриране според това колко често слушате.",
+      s3_p3: "Свободен импорт и експорт на песни с автоматична проверка за дубликати.",
+      s3_p4: "Удобен редактор на тагове: заглавие, изпълнител, албум и обложка.",
+      s4_title: "Тепърва предстои по-добро",
+      s4_body: "Aera се разработва активно. Нови функции и подобрения излизат редовно, а вашата обратна връзка определя какво следва.",
+      s4_cta: "Изпробвайте бетата"
     },
     de: {
       subtitle: "Ein persönlicher Musikplayer, der alles auf dem Gerät speichert.",
@@ -381,7 +668,21 @@
       nav_theme: "Design wechseln",
       tf_title: "Beta testen",
       tf_body: "Früher Zugriff über TestFlight",
-      tf_aria: "Der TestFlight-Beta beitreten"
+      tf_aria: "Der TestFlight-Beta beitreten",
+      scroll_hint: "Scrolle, um mehr zu sehen",
+      nav_slide: "Zu Folie",
+      s2_title: "Nichts steht im Weg",
+      s2_lead: "Keine Tab-Leisten, keine versteckten Einstellungen, kein Ballast — nur deine Musik.",
+      s2_p1: "Verwalte deine gesamte Bibliothek an einem Ort: Titel hinzufügen, Playlists erstellen, neu sortieren und ordnen, ohne dich durch Menüs zu wühlen.",
+      s2_p2: "Jede Geste tut das Naheliegende. Es gibt nichts zu lernen.",
+      s3_title: "Finde alles in Sekunden",
+      s3_p1: "Suche gleichzeitig in Titeln, Alben, Playlists und Interpreten.",
+      s3_p2: "Filtere danach, wie oft du wirklich hörst.",
+      s3_p3: "Titel frei importieren und exportieren — mit automatischer Dublettenprüfung.",
+      s3_p4: "Ein aufgeräumter Tag-Editor für Titel, Interpret, Album und Cover.",
+      s4_title: "Es wird nur besser",
+      s4_body: "Aera wird aktiv weiterentwickelt. Neue Funktionen und Verbesserungen erscheinen regelmäßig — und dein Feedback bestimmt, was als Nächstes kommt.",
+      s4_cta: "Beta ausprobieren"
     }
   };
 
@@ -423,7 +724,97 @@
     try { localStorage.setItem("aera-theme", next); } catch (e) {}
   });
 
-  // TODO: replace "#" with the public TestFlight link once external testing is live.
+  // ---- TestFlight link ----
+  // TODO: set this to the public TestFlight invite URL once external testing is live.
+  var TESTFLIGHT_URL = "";
+  if (TESTFLIGHT_URL) {
+    ["testflight-link", "cta-link"].forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el) el.href = TESTFLIGHT_URL;
+    });
+  }
+
+  // ---- Feature slide deck ----
+  var deck = document.querySelector(".deck");
+  var slides = deck ? Array.prototype.slice.call(deck.querySelectorAll(".slide")) : [];
+  var dots = Array.prototype.slice.call(document.querySelectorAll(".deck-nav [data-slide-to]"));
+  var supportsInert = "inert" in HTMLElement.prototype;
+  var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  dots.forEach(function (dot, i) {
+    if (dict.nav_slide) dot.setAttribute("aria-label", dict.nav_slide + " " + (i + 1));
+  });
+
+  if (slides.length > 1) {
+    var index = 0;
+    var locked = false;
+    var lockTimer = null;
+
+    function render() {
+      slides.forEach(function (slide, i) {
+        slide.classList.remove("is-active", "is-above", "is-below");
+        slide.classList.add(i === index ? "is-active" : (i < index ? "is-above" : "is-below"));
+        var hidden = i !== index;
+        slide.setAttribute("aria-hidden", hidden ? "true" : "false");
+        if (supportsInert) slide.inert = hidden;
+      });
+      dots.forEach(function (dot, i) {
+        dot.setAttribute("aria-current", i === index ? "true" : "false");
+      });
+      document.body.setAttribute("data-slide", String(index));
+      if (index > 0) document.body.classList.add("hint-dismissed");
+    }
+
+    function go(target) {
+      var next = Math.max(0, Math.min(slides.length - 1, target));
+      if (next === index || locked) return;
+      index = next;
+      locked = true;
+      render();
+      if (lockTimer) clearTimeout(lockTimer);
+      lockTimer = setTimeout(function () { locked = false; }, reduceMotion ? 320 : 850);
+    }
+
+    window.addEventListener("wheel", function (e) {
+      if (Math.abs(e.deltaY) < 12) return;
+      e.preventDefault();
+      go(index + (e.deltaY > 0 ? 1 : -1));
+    }, { passive: false });
+
+    var touchStartY = null;
+    deck.addEventListener("touchstart", function (e) {
+      touchStartY = e.touches[0].clientY;
+    }, { passive: true });
+    deck.addEventListener("touchmove", function (e) {
+      if (touchStartY !== null) e.preventDefault();
+    }, { passive: false });
+    deck.addEventListener("touchend", function (e) {
+      if (touchStartY === null) return;
+      var dy = touchStartY - e.changedTouches[0].clientY;
+      if (Math.abs(dy) > 45) go(index + (dy > 0 ? 1 : -1));
+      touchStartY = null;
+    });
+
+    window.addEventListener("keydown", function (e) {
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      // Don't hijack keys meant for a focused control (Space/Enter activate buttons & links).
+      if (e.target && e.target.closest && e.target.closest("a, button, input, textarea, select")) return;
+      switch (e.key) {
+        case "ArrowDown": case "PageDown": case " ": case "Spacebar":
+          e.preventDefault(); go(index + 1); break;
+        case "ArrowUp": case "PageUp":
+          e.preventDefault(); go(index - 1); break;
+        case "Home": e.preventDefault(); go(0); break;
+        case "End": e.preventDefault(); go(slides.length - 1); break;
+      }
+    });
+
+    dots.forEach(function (dot, i) {
+      dot.addEventListener("click", function () { go(i); });
+    });
+
+    render();
+  }
 })();
 </script>
 </body>
