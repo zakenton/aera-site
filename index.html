@@ -50,9 +50,17 @@
 
   html, body { height: 100%; }
 
+  /* Paint the theme colour on <html> too, so the area the mobile browser
+     chrome uncovers when it retracts never flashes the default page white. */
+  html {
+    background: var(--bg);
+    transition: background-color .3s ease;
+  }
+
   body {
     margin: 0;
-    height: 100svh;
+    height: 100dvh;
+    min-height: 100svh;
     background: var(--bg);
     color: var(--text);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -408,8 +416,13 @@
   }
 
   @media (max-width: 700px) {
-    .eq-glow { padding: 0 6vw; }
-    .eq-glow span { max-width: 26px; }
+    .eq-glow {
+      padding: 0;
+      gap: clamp(5px, 2.2vw, 14px);
+    }
+    /* No cap on phones — let the bars grow to fill the full screen width
+       instead of clustering in a narrow strip in the middle. */
+    .eq-glow span { max-width: none; }
   }
 
   @keyframes eq-bounce {
@@ -439,7 +452,7 @@
   .eq-glow span:nth-child(20) { height: 48%; animation-duration: 2.2s; animation-delay: -0.9s; }
 
   @media (max-width: 480px) {
-    .eq-glow span:nth-child(n+9) { display: none; }
+    .eq-glow span:nth-child(n+15) { display: none; }
   }
 
   @media (prefers-reduced-motion: reduce) {
