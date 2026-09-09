@@ -132,8 +132,8 @@
     text-align: center;
     padding: max(88px, env(safe-area-inset-top)) 24px max(88px, env(safe-area-inset-bottom));
     opacity: 0;
-    transform: translateY(64px) scale(0.96);
-    filter: blur(8px);
+    transform: translateY(72px);
+    filter: blur(9px);
     pointer-events: none;
     transition:
       transform .8s cubic-bezier(.22, .61, .36, 1),
@@ -143,18 +143,25 @@
 
   .slide.is-active {
     opacity: 1;
-    transform: translateY(var(--lift)) scale(1);
+    transform: translateY(var(--lift));
     filter: blur(0);
     pointer-events: auto;
   }
 
   .slide.is-above {
     opacity: 0;
-    transform: translateY(calc(var(--lift) - 90px)) scale(1.05);
-    filter: blur(12px);
+    transform: translateY(calc(var(--lift) - 96px));
+    filter: blur(13px);
   }
 
   .slide--hero { --lift: -13svh; }
+
+  /* Depth cue on the inner content only, so the full-width layer never changes size. */
+  .slide > :not(.scroll-hint) {
+    transition: transform .8s cubic-bezier(.22, .61, .36, 1);
+  }
+  .slide:not(.is-active) > :not(.scroll-hint) { transform: scale(0.94); }
+  .slide.is-above > :not(.scroll-hint) { transform: scale(1.05); }
 
   .logo {
     margin: 0;
@@ -303,7 +310,8 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .slide {
+    .slide,
+    .slide > :not(.scroll-hint) {
       transition: opacity .3s ease;
       transform: none !important;
       filter: none !important;
