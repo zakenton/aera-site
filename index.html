@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#F7F3EB" id="meta-theme-color">
 <title>Aera</title>
 <meta name="description" content="Aera — a personal, on-device music player for iPhone.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,9 +16,10 @@
     --text-dim: rgba(26, 23, 18, 0.62);
     --card: rgba(253, 250, 243, 0.72);
     --card-border: rgba(26, 23, 18, 0.10);
-    --glow: rgba(0, 0, 0, 0.20);
-    --glow-soft: rgba(0, 0, 0, 0.09);
-    --eq-bar: rgba(0, 0, 0, 0.55);
+    --glow: rgba(0, 0, 0, 0.26);
+    --glow-soft: rgba(0, 0, 0, 0.11);
+    --eq-core: 42, 37, 29;
+    --eq-alpha: 0.5;
     --shadow: rgba(26, 23, 18, 0.14);
     color-scheme: light dark;
   }
@@ -28,9 +30,10 @@
       --text-dim: rgba(255, 255, 255, 0.62);
       --card: rgba(28, 28, 30, 0.68);
       --card-border: rgba(255, 255, 255, 0.12);
-      --glow: rgba(255, 255, 255, 0.22);
-      --glow-soft: rgba(255, 255, 255, 0.10);
-      --eq-bar: rgba(255, 255, 255, 0.55);
+      --glow: rgba(255, 255, 255, 0.30);
+      --glow-soft: rgba(255, 255, 255, 0.13);
+      --eq-core: 255, 255, 255;
+      --eq-alpha: 0.6;
       --shadow: rgba(0, 0, 0, 0.45);
     }
   }
@@ -40,9 +43,10 @@
     --text-dim: rgba(255, 255, 255, 0.62);
     --card: rgba(28, 28, 30, 0.68);
     --card-border: rgba(255, 255, 255, 0.12);
-    --glow: rgba(255, 255, 255, 0.22);
-    --glow-soft: rgba(255, 255, 255, 0.10);
-    --eq-bar: rgba(255, 255, 255, 0.55);
+    --glow: rgba(255, 255, 255, 0.30);
+    --glow-soft: rgba(255, 255, 255, 0.13);
+    --eq-core: 255, 255, 255;
+    --eq-alpha: 0.6;
     --shadow: rgba(0, 0, 0, 0.45);
   }
 
@@ -173,16 +177,18 @@
 
   .logo {
     margin: 0;
-    font-family: ui-rounded, "SF Pro Rounded", "Fredoka", system-ui, sans-serif;
-    font-weight: 700;
-    font-size: clamp(4.2rem, 13vw, 14rem);
-    letter-spacing: -0.01em;
-    line-height: 1;
+    line-height: 0;
+    width: clamp(220px, 62vw, 640px);
+  }
+  .logo-svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
     color: var(--text);
-    text-shadow:
-      0 0 14px var(--glow),
-      0 0 38px var(--glow-soft),
-      0 0 74px var(--glow-soft);
+    filter:
+      drop-shadow(0 0 16px var(--glow))
+      drop-shadow(0 0 44px var(--glow-soft));
   }
 
   .subtitle {
@@ -387,87 +393,23 @@
     transform: translateY(-1px);
   }
 
-  /* ---------- Equalizer glow ---------- */
+  /* ---------- Equalizer glow (canvas) ---------- */
 
   .eq-glow {
     position: fixed;
     left: 0;
     right: 0;
-    bottom: -60px;
-    height: 46vh;
+    bottom: 0;
+    width: 100%;
+    height: 42vh;
     z-index: 0;
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    gap: clamp(6px, 1.2vw, 22px);
-    padding: 0;
-    filter: blur(28px);
-    opacity: 0.6;
     pointer-events: none;
-    -webkit-mask-image: linear-gradient(to top, black, transparent 85%);
-    mask-image: linear-gradient(to top, black, transparent 85%);
-  }
-
-  .eq-glow span {
-    flex: 1 1 auto;
-    border-radius: 12px;
-    background: var(--eq-bar);
-    animation: eq-bounce 2.6s ease-in-out infinite;
-  }
-
-  @media (max-width: 700px) {
-    .eq-glow {
-      padding: 0;
-      gap: clamp(5px, 2.2vw, 14px);
-    }
-    /* No cap on phones — let the bars grow to fill the full screen width
-       instead of clustering in a narrow strip in the middle. */
-    .eq-glow span { max-width: none; }
-  }
-
-  @keyframes eq-bounce {
-    0%, 100% { height: 14%; }
-    50% { height: 78%; }
-  }
-
-  .eq-glow span:nth-child(1)  { height: 30%; animation-duration: 2.1s; animation-delay: -0.1s; }
-  .eq-glow span:nth-child(2)  { height: 55%; animation-duration: 2.8s; animation-delay: -1.4s; }
-  .eq-glow span:nth-child(3)  { height: 20%; animation-duration: 2.3s; animation-delay: -0.6s; }
-  .eq-glow span:nth-child(4)  { height: 68%; animation-duration: 3.1s; animation-delay: -2.0s; }
-  .eq-glow span:nth-child(5)  { height: 40%; animation-duration: 2.5s; animation-delay: -0.3s; }
-  .eq-glow span:nth-child(6)  { height: 75%; animation-duration: 2.9s; animation-delay: -1.1s; }
-  .eq-glow span:nth-child(7)  { height: 25%; animation-duration: 2.2s; animation-delay: -1.8s; }
-  .eq-glow span:nth-child(8)  { height: 60%; animation-duration: 3.3s; animation-delay: -0.8s; }
-  .eq-glow span:nth-child(9)  { height: 35%; animation-duration: 2.6s; animation-delay: -2.3s; }
-  .eq-glow span:nth-child(10) { height: 70%; animation-duration: 2.4s; animation-delay: -1.6s; }
-  .eq-glow span:nth-child(11) { height: 22%; animation-duration: 3.0s; animation-delay: -0.4s; }
-  .eq-glow span:nth-child(12) { height: 52%; animation-duration: 2.7s; animation-delay: -2.1s; }
-  .eq-glow span:nth-child(13) { height: 32%; animation-duration: 2.9s; animation-delay: -1.9s; }
-  .eq-glow span:nth-child(14) { height: 64%; animation-duration: 2.3s; animation-delay: -0.7s; }
-  .eq-glow span:nth-child(15) { height: 24%; animation-duration: 3.2s; animation-delay: -2.5s; }
-  .eq-glow span:nth-child(16) { height: 58%; animation-duration: 2.6s; animation-delay: -1.2s; }
-  .eq-glow span:nth-child(17) { height: 38%; animation-duration: 2.4s; animation-delay: -0.2s; }
-  .eq-glow span:nth-child(18) { height: 72%; animation-duration: 3.0s; animation-delay: -1.7s; }
-  .eq-glow span:nth-child(19) { height: 28%; animation-duration: 2.7s; animation-delay: -2.8s; }
-  .eq-glow span:nth-child(20) { height: 48%; animation-duration: 2.2s; animation-delay: -0.9s; }
-
-  @media (max-width: 480px) {
-    .eq-glow span:nth-child(n+15) { display: none; }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .eq-glow span { animation: none; height: 40% !important; }
   }
 </style>
 </head>
 <body>
 
-  <div class="eq-glow" aria-hidden="true">
-    <span></span><span></span><span></span><span></span><span></span><span></span>
-    <span></span><span></span><span></span><span></span><span></span><span></span>
-    <span></span><span></span><span></span><span></span><span></span><span></span>
-    <span></span><span></span>
-  </div>
+  <canvas id="eq" class="eq-glow" aria-hidden="true"></canvas>
 
   <header class="topbar">
     <div class="topbar-group">
@@ -491,7 +433,50 @@
 
   <main class="deck">
     <section class="slide slide--hero is-active" id="slide-1" aria-label="Aera">
-      <h1 class="logo">Aera</h1>
+      <h1 class="logo" aria-label="Aera">
+        <svg class="logo-svg" viewBox="0 0 320 130" role="img" aria-hidden="true">
+          <defs>
+            <linearGradient id="lg-body" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="currentColor" stop-opacity="0.14"/>
+              <stop offset="0.48" stop-color="currentColor" stop-opacity="0.52"/>
+              <stop offset="1" stop-color="currentColor" stop-opacity="0.22"/>
+            </linearGradient>
+            <linearGradient id="lg-hi" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#fff" stop-opacity="0.95"/>
+              <stop offset="0.32" stop-color="#fff" stop-opacity="0.16"/>
+              <stop offset="0.58" stop-color="#fff" stop-opacity="0"/>
+            </linearGradient>
+            <linearGradient id="lg-lo" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0.62" stop-color="#fff" stop-opacity="0"/>
+              <stop offset="1" stop-color="#fff" stop-opacity="0.5"/>
+            </linearGradient>
+            <linearGradient id="lg-sheen" x1="0" y1="0" x2="1" y2="0" gradientTransform="translate(-1 0)">
+              <stop offset="0.30" stop-color="#fff" stop-opacity="0"/>
+              <stop offset="0.5" stop-color="#fff" stop-opacity="1"/>
+              <stop offset="0.70" stop-color="#fff" stop-opacity="0"/>
+              <animateTransform class="lg-anim" attributeName="gradientTransform" type="translate"
+                values="-1 0; 1.7 0" dur="6s" repeatCount="indefinite"/>
+            </linearGradient>
+            <filter id="lg-liquid" x="-25%" y="-55%" width="150%" height="210%">
+              <feTurbulence type="fractalNoise" baseFrequency="0.006 0.008" numOctaves="1" seed="6" result="n"/>
+              <feDisplacementMap in="SourceGraphic" in2="n" scale="5"
+                xChannelSelector="R" yChannelSelector="G">
+                <animate class="lg-anim" attributeName="scale"
+                  values="3.5; 7; 3.5" keyTimes="0; 0.5; 1" dur="11s" repeatCount="indefinite"/>
+              </feDisplacementMap>
+            </filter>
+          </defs>
+          <g filter="url(#lg-liquid)"
+             font-family="ui-rounded, 'SF Pro Rounded', 'Fredoka', system-ui, sans-serif"
+             font-weight="700" font-size="94" letter-spacing="-3" text-anchor="middle">
+            <text x="160" y="95" fill="url(#lg-body)">Aera</text>
+            <text x="160" y="95" fill="none" stroke="currentColor" stroke-opacity="0.4" stroke-width="0.9">Aera</text>
+            <text x="160" y="96" fill="url(#lg-lo)" style="mix-blend-mode:screen">Aera</text>
+            <text x="160" y="95" fill="url(#lg-hi)" style="mix-blend-mode:screen">Aera</text>
+            <text x="160" y="95" fill="url(#lg-sheen)" style="mix-blend-mode:screen">Aera</text>
+          </g>
+        </svg>
+      </h1>
       <p class="subtitle" data-i18n="subtitle">A personal, on-device music player.</p>
       <div class="scroll-hint" aria-hidden="true">
         <span data-i18n="scroll_hint">Scroll to explore</span>
@@ -725,18 +710,30 @@
 
   // ---- Theme toggle ----
   var root = document.documentElement;
+  var prefersDark = window.matchMedia("(prefers-color-scheme: dark)");
   var stored = null;
   try { stored = localStorage.getItem("aera-theme"); } catch (e) {}
   if (stored === "light" || stored === "dark") root.setAttribute("data-theme", stored);
 
+  var metaThemeColor = document.getElementById("meta-theme-color");
+  function effectiveDark() {
+    var t = root.getAttribute("data-theme");
+    if (t === "dark") return true;
+    if (t === "light") return false;
+    return prefersDark.matches;
+  }
+  function syncThemeColor() {
+    if (metaThemeColor) metaThemeColor.setAttribute("content", effectiveDark() ? "#000000" : "#F7F3EB");
+  }
+  syncThemeColor();
+  prefersDark.addEventListener("change", syncThemeColor);
+
   document.getElementById("theme-toggle").addEventListener("click", function () {
-    var current = root.getAttribute("data-theme");
-    if (!current) {
-      current = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-    }
-    var next = current === "dark" ? "light" : "dark";
+    var next = effectiveDark() ? "light" : "dark";
     root.setAttribute("data-theme", next);
     try { localStorage.setItem("aera-theme", next); } catch (e) {}
+    syncThemeColor();
+    if (window.__eqReadColor) window.__eqReadColor();
   });
 
   // ---- TestFlight link ----
@@ -745,6 +742,142 @@
     ["testflight-link", "cta-link"].forEach(function (id) {
       var el = document.getElementById(id);
       if (el) el.href = TESTFLIGHT_URL;
+    });
+  }
+
+  // ---- Bottom equalizer (canvas) ----
+  (function () {
+    var cvs = document.getElementById("eq");
+    if (!cvs || !cvs.getContext) return;
+    var ctx = cvs.getContext("2d");
+    var off = document.createElement("canvas");
+    var octx = off.getContext("2d");
+    var canFilter = (typeof octx.filter === "string");
+    var mqReduce = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+    var dpr = 1, cssW = 0, cssH = 0;
+    var bars = [];
+    var core = "255,255,255", alpha = 0.55;
+    var intensity = 0.42, target = 0.42;
+    var running = false, rafId = 0, startT = 0;
+
+    function readColor() {
+      var s = getComputedStyle(document.documentElement);
+      var c = s.getPropertyValue("--eq-core").trim();
+      var a = parseFloat(s.getPropertyValue("--eq-alpha"));
+      if (c) core = c;
+      if (a === a) alpha = a;
+      if (mqReduce.matches) drawBars(target, null);
+    }
+    window.__eqReadColor = readColor;
+
+    function build() {
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      cssW = window.innerWidth;
+      cssH = cvs.clientHeight || Math.round(window.innerHeight * 0.42);
+      cvs.width = off.width = Math.round(cssW * dpr);
+      cvs.height = off.height = Math.round(cssH * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      octx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      var n = Math.max(14, Math.min(40, Math.round(cssW / 34)));
+      if (bars.length !== n) {
+        bars = [];
+        for (var i = 0; i < n; i++) {
+          bars.push({ base: Math.random(), freq: 0.6 + Math.random() * 0.8, phase: Math.random() * Math.PI * 2 });
+        }
+      }
+    }
+
+    function rr(c, x, y, w, h, r) {
+      c.beginPath();
+      c.moveTo(x + r, y);
+      c.arcTo(x + w, y, x + w, y + h, r);
+      c.arcTo(x + w, y + h, x, y + h, r);
+      c.arcTo(x, y + h, x, y, r);
+      c.arcTo(x, y, x + w, y, r);
+      c.closePath();
+    }
+
+    function drawBars(inten, t) {
+      if (!cssW || !cssH || !bars.length) return;
+      var n = bars.length;
+      var step = cssW / n;
+      var barW = step * 0.78;
+      var speed = 0.85 + inten * 0.5;
+      var src = canFilter ? octx : ctx;
+      src.clearRect(-4, -4, cssW + 8, cssH + 8);
+      for (var i = -1; i <= n; i++) {
+        var b = bars[(i + n) % n];
+        var wob = (t === null) ? 0.8 : (0.5 + 0.5 * Math.sin(t * b.freq * speed + b.phase));
+        var h = cssH * (0.08 + b.base * 0.15 + inten * 0.34) * (0.45 + 0.55 * wob);
+        if (h < 6) h = 6;
+        var x = i * step + (step - barW) / 2;
+        var grad = src.createLinearGradient(0, cssH, 0, cssH - h);
+        grad.addColorStop(0, "rgba(" + core + "," + alpha + ")");
+        grad.addColorStop(0.55, "rgba(" + core + "," + (alpha * 0.32) + ")");
+        grad.addColorStop(1, "rgba(" + core + ",0)");
+        src.fillStyle = grad;
+        rr(src, x, cssH - h, barW, h + 60, Math.min(barW / 2, 16));
+        src.fill();
+      }
+      if (canFilter) {
+        ctx.clearRect(0, 0, cssW, cssH);
+        ctx.filter = "blur(18px)";
+        ctx.drawImage(off, 0, 0, cssW, cssH);
+        ctx.filter = "none";
+      }
+    }
+
+    function frame(now) {
+      if (!startT) startT = now;
+      var t = (now - startT) / 1000;
+      intensity += (target - intensity) * 0.06;
+      drawBars(intensity, t);
+      if (running) rafId = requestAnimationFrame(frame);
+    }
+
+    function start() {
+      if (running || mqReduce.matches || document.hidden) return;
+      running = true; startT = 0;
+      rafId = requestAnimationFrame(frame);
+    }
+    function stop() {
+      running = false;
+      if (rafId) cancelAnimationFrame(rafId);
+    }
+
+    window.__eqSetSlide = function (i) {
+      target = Math.max(0.28, Math.min(1.35, 0.4 + i * 0.27));
+      if (mqReduce.matches) { intensity = target; drawBars(target, null); }
+    };
+
+    var rt;
+    function onResize() {
+      clearTimeout(rt);
+      rt = setTimeout(function () {
+        build();
+        if (mqReduce.matches) drawBars(target, null);
+      }, 150);
+    }
+
+    readColor();
+    build();
+    window.addEventListener("resize", onResize);
+    window.addEventListener("orientationchange", onResize);
+    document.addEventListener("visibilitychange", function () {
+      if (document.hidden) stop(); else start();
+    });
+    mqReduce.addEventListener("change", function () {
+      if (mqReduce.matches) { stop(); drawBars(target, null); } else { start(); }
+    });
+
+    if (mqReduce.matches) drawBars(target, null); else start();
+  })();
+
+  // Reduced motion: freeze the liquid-glass wordmark (SMIL ignores CSS).
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    document.querySelectorAll(".logo-svg animate, .logo-svg animateTransform").forEach(function (a) {
+      if (a.parentNode) a.parentNode.removeChild(a);
     });
   }
 
@@ -777,6 +910,7 @@
       });
       document.body.setAttribute("data-slide", String(index));
       if (index > 0) document.body.classList.add("hint-dismissed");
+      if (window.__eqSetSlide) window.__eqSetSlide(index);
     }
 
     function go(target) {
