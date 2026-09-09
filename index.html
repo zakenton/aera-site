@@ -354,16 +354,12 @@
 
   .tf-icon {
     flex: none;
-    width: 34px;
-    height: 34px;
-    border-radius: 10px;
-    background: linear-gradient(135deg, #0A84FF, #6E5CE6);
-    color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    width: 40px;
+    height: 40px;
+    margin: -4px 0;
+    display: block;
+    object-fit: contain;
   }
-  .tf-icon svg { width: 18px; height: 18px; }
 
   .tf-text {
     display: flex;
@@ -517,7 +513,7 @@
       <div class="slide-content">
         <h2 data-i18n="s4_title">Only getting better</h2>
         <p class="slide-lead" data-i18n="s4_body">Aera is actively developed. New features and refinements land regularly — and your feedback shapes what comes next.</p>
-        <a class="slide-cta" id="cta-link" href="#" data-i18n-aria="tf_aria" aria-label="Join the TestFlight beta">
+        <a class="slide-cta" id="cta-link" href="https://testflight.apple.com/join/pvtwaEbs" target="_blank" rel="noopener" data-i18n-aria="tf_aria" aria-label="Join the TestFlight beta">
           <svg viewBox="0 0 24 24" fill="none"><path d="M3 11.5 21 4l-6.5 18-3-8-8.5-2.5Z" fill="#fff"/><path d="M11.5 13.5 21 4" stroke="#fff" stroke-width="1.3" stroke-linecap="round"/></svg>
           <span data-i18n="s4_cta">Try the beta</span>
         </a>
@@ -532,10 +528,8 @@
     <button type="button" data-slide-to="3" aria-current="false" data-i18n-aria="nav_slide" aria-label="Go to slide"></button>
   </nav>
 
-  <a class="testflight" id="testflight-link" href="#" data-i18n-aria="tf_aria" aria-label="Join the TestFlight beta">
-    <span class="tf-icon">
-      <svg viewBox="0 0 24 24" fill="none"><path d="M3 11.5 21 4l-6.5 18-3-8-8.5-2.5Z" fill="#fff"/><path d="M11.5 13.5 21 4" stroke="#fff" stroke-width="1.3" stroke-linecap="round"/></svg>
-    </span>
+  <a class="testflight" id="testflight-link" href="https://testflight.apple.com/join/pvtwaEbs" target="_blank" rel="noopener" data-i18n-aria="tf_aria" aria-label="Join the TestFlight beta">
+    <img class="tf-icon" src="testflight-2023-05-19.png.webp" alt="TestFlight" width="40" height="40">
     <span class="tf-text">
       <strong data-i18n="tf_title">Try the beta</strong>
       <span data-i18n="tf_body">Early access via TestFlight</span>
@@ -733,8 +727,7 @@
   });
 
   // ---- TestFlight link ----
-  // TODO: set this to the public TestFlight invite URL once external testing is live.
-  var TESTFLIGHT_URL = "";
+  var TESTFLIGHT_URL = "https://testflight.apple.com/join/pvtwaEbs";
   if (TESTFLIGHT_URL) {
     ["testflight-link", "cta-link"].forEach(function (id) {
       var el = document.getElementById(id);
