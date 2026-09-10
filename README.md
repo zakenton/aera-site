@@ -9,6 +9,7 @@ Published via GitHub Pages from the root of this repo's `main` branch.
 - `privacy.html` — Privacy Policy URL
 - `support.html` — Support URL
 - `.nojekyll` — serve files as-is on GitHub Pages (no Jekyll build)
+- `reference/colors.md` — every colour used, by light/dark theme
 
 ## URLs
 
